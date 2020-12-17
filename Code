@@ -1,0 +1,23 @@
+#include "mpi.h"
+#include<stdio.h>
+
+int main(int argc, char *argv[])
+{
+	int rank, size, n=1, a[100], c, i;
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
+	if(rank==0)
+	{
+		fprintf(stdout,"ENTER %d NUMBER OF ELEMENTS: \n", size);
+		fflush(stdout);
+		for(i=0;i<size;i++)
+		scanf("%d", &a[i]);
+	}
+	MPI_Scatter(a,1,MPI_INT, &c, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	for(i=c;i>0;i--)
+		n=n*i;
+	fprintf(stdout,"THE VALUE IN PROCESS %d = %d \n", rank, n);
+	MPI_Finalize();
+	return 0;
+}
